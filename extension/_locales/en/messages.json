@@ -1,0 +1,10 @@
+{
+  "appName": {
+    "message": "Blurst",
+    "description": "The name of the application"
+  },
+  "appDescription": {
+    "message": "Automatically blur screencasts and demos on the fly. No more dummy data.",
+    "description": "The description of the application"
+  }
+}

@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link href="styles/popup.css" rel="stylesheet">
+  </head>
+  <body id="blrst_popup">
+    <img class="blrst_logo" src="images/icon-38.png" />
+    <h1>Redax</h1>
+    <button id="blrst_start_btn" class="blrst_inactive">Turn on Redax</button>
+    <form>
+        <input type="checkbox" name="highlight_blrsts" value="highlight_blrsts" id="highlight_blrsts" disabled>
+        <label for="highlight_blrsts">Highlight Redaxions</label>
+        <br>
+        <input type="checkbox" name="toggle_blrsts" value="toggle_blrsts" id="toggle_blrsts" disabled>
+        <label for="toggle_blrsts">Show original content</label>
+    </form>
+    <p><span id="blrst_counter">0</span> Redaxions on this page</p>
+    <button id="blrst_options_btn">Redax settings</button>
+    <script src="scripts/vendor/loglevel.min.js"></script>
+    <script src="scripts/popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+#blrst_popup { 
+  width: 150px;
+  padding: 1em;
+  background-color: rgba(0, 0, 0, 0.1);
+  font-family: Arial;
+  font-size: 75%;
+}
+
+#blrst_popup h1 {
+  padding: 0;
+  margin: 0 0 0.5em 0;
+  font-weight: normal;
+}
+
+.blrst_logo {
+  float: right;
+  width: 25px;
+}
+
+#blrst_start_btn {
+  margin-bottom: 0.75em;
+}
+
+#blrst_start_btn.blrst_inactive {
+  background-color: lightgreen;
+}
+
+#blrst_start_btn.blrst_active {
+  background-color: coral;
+}
