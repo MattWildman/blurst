@@ -9,18 +9,15 @@
   },
   "default_locale": "en",
   "background": {
+    "persistent": false,
     "scripts": [
       "scripts/background.js"
     ]
   },
   "permissions": [
     "tabs",
-    "http://*/*",
-    "https://*/*",
-    "cookies",
-    "*://*.google.com/",
-    "topSites",
-    "storage"
+    "storage",
+    "webNavigation"
   ],
   "options_ui": {
     "page": "settings.html",
@@ -29,15 +26,27 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*"
+        "<all_urls>"
       ],
       "css": ["styles/main.css"],
       "js": [
+        "scripts/blurst.js",
         "scripts/content.js"
       ],
       "run_at": "document_start",
       "all_frames": false
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "css": ["styles/main.css"],
+      "js": [
+        "scripts/blurst.js",
+        "scripts/frames-content.js"
+      ],
+      "run_at": "document_start",
+      "all_frames": true
     }
   ],
   "web_accessible_resources": [

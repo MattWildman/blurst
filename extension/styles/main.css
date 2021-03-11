@@ -10,41 +10,10 @@
          url("chrome-extension://__MSG_@@extension_id__/styles/fonts/redacted-script-regular.woff") format("woff");
 }
 
-/***OVERLAY STYLES***/
-.blrst_overlay {
-   position: fixed;
-   top: 0;
-   left: 0;
-   width: 100%;
-   background-color: white;
-   opacity: 0.75;
-   z-index: 9999;
-   height: 100%;
+body, body * {
+    opacity: 0 !important;
 }
 
-/***HIGHLIGHT STYLES***/
-.blrst_highlight {
-    outline: 1px solid red;
-}
-
-/***ACTION STYLES***/
-.blrst_blurred {
-    color: transparent !important;
-    text-decoration: none !important;
-}
-
-.blrst_invisible {
-    visibility: hidden !important;
-}
-
-.blrst_hidden {
-    display: hidden !important;
-}
-
-.blrst_redacted {
-    font-family: "Redacted" !important;
-}
-
-.blrst_scribbled {
-    font-family: "Redacted Script" !important;
+body.blrst_ready, body.blrst_ready * {
+    opacity: unset !important;
 }

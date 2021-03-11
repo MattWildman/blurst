@@ -1,137 +1,93 @@
 'use strict';
 
-var redaxActive,
+let blurstActive,
     highlightCheck = document.querySelector('#highlight_blrsts'),
-    showCheck = document.querySelector('#toggle_blrsts'),
     startBtn = document.querySelector('#blrst_start_btn'),
     optionsBtn = document.querySelector('#blrst_options_btn');
 
-function startRedax() {
-  log.trace()
-  redaxActive = true;
-  sendContentScriptCommand('toggleRedax', true);
-  sendContentScriptCommand('getCount', null);
+function startBlurst() {
+  blurstActive = true;
+  sendContentScriptCommand('toggleBlurst', true);
   chrome.browserAction.setIcon({path: 'images/active-icon-19.png'});
-  chrome.browserAction.setTitle({title: 'Redax is active!'});
+  chrome.browserAction.setTitle({title: 'Blurst is active!'});
   startBtn.classList.remove('blrst_inactive');
   startBtn.classList.add('blrst_active');
-  startBtn.innerText = 'Turn off Redax';
-  highlightCheck.removeAttribute('disabled');
-  showCheck.removeAttribute('disabled');
-  chrome.storage.local.get(['highlighted'], function(result) {
-      var highlighted = result.highlighted;
+  startBtn.innerText = 'Turn off';
+  chrome.storage.local.get(['highlighted'], (result) => {
+      let highlighted = result.highlighted;
       sendContentScriptCommand('toggleHighlights', highlighted);
       if (highlighted) {
-        highlightCheck.setAttribute('checked', true);
+        highlightCheck.setAttribute('checked', 'checked');
       }
       else {
         highlightCheck.removeAttribute('checked');
       }
   });
-  chrome.storage.local.get(['showOriginals'], function(result) {
-      var show = result.showOriginals;
-      sendContentScriptCommand('toggleRedaxions', show);
-      if (show) {
-        showCheck.setAttribute('checked', true);
-      }
-      else {
-        showCheck.removeAttribute('checked');
-      }
-  });
 }
 
-function stopRedax() {
-  log.trace()
-  redaxActive = false;
-  sendContentScriptCommand('toggleRedax', false);
+function stopBlurst() {
+  blurstActive = false;
+  sendContentScriptCommand('toggleBlurst', false);
   chrome.browserAction.setIcon({path: 'images/icon-19.png'});
-  chrome.browserAction.setTitle({title: 'Redax is currently inactive'});
-  chrome.browserAction.setBadgeText({text: ''});
+  chrome.browserAction.setTitle({title: 'Blurst is currently inactive'});
   startBtn.classList.remove('blrst_active');
   startBtn.classList.add('blrst_inactive');
-  startBtn.innerText = 'Turn on Redax';
-  highlightCheck.setAttribute('disabled', 'disabled');
-  showCheck.setAttribute('disabled', 'disabled');
+  startBtn.innerText = 'Turn on';
 }
 
 function sendContentScriptCommand(commandName, paramValue) {
-  log.trace(commandName, paramValue)
-  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-    chrome.tabs.sendMessage(tabs[0].id, {command: commandName, param: paramValue}, function(response) {
-      if (response !== undefined && response.message == 'count') {
-        console.log('receiving message');
-        chrome.browserAction.setBadgeText({text: response.value.toString()});
-        document.querySelector('#blrst_counter').innerHTML = response.value;
-      }
-      else if (response) {
-        console.log(commandName + ' instruction received');
-      }
-      else {
-        console.warn(commandName + ' instruction not received');
-      }     
+    chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+        chrome.tabs.sendMessage(tabs[0].id, {command: commandName, param: paramValue}, (response) => {
+            console.log('receiving message', response);
+            if (response) {
+                console.log(commandName + ' instruction received');
+            }
+            else {
+                console.warn(commandName + ' instruction not received');
+            }
+        });
     });
-  });
 }
 
 function addEventListeners() {
-  log.trace()
-  highlightCheck.addEventListener('change', function() {
-    chrome.storage.local.set({highlighted: highlightCheck.checked}, function() {
+  highlightCheck.addEventListener('change', () => {
+    chrome.storage.local.set({highlighted: highlightCheck.checked}, () => {
       sendContentScriptCommand('toggleHighlights', highlightCheck.checked);
     });
   });
-  showCheck.addEventListener('change', function() {
-    chrome.storage.local.set({showOriginals: showCheck.checked}, function() {
-      sendContentScriptCommand('toggleRedaxions', showCheck.checked);
-    });
-  });
-  startBtn.addEventListener('click', function() {
-      if (!redaxActive) {
-        chrome.storage.local.set({active: true}, function() {
-          startRedax();
+  startBtn.addEventListener('click', () => {
+      if (!blurstActive) {
+        chrome.storage.local.set({active: true}, () => {
+          startBlurst();
         });
       }
       else {
-        chrome.storage.local.set({active: false}, function() {
-          stopRedax();
+        chrome.storage.local.set({active: false}, () => {
+          stopBlurst();
         });
       }
   });
-  optionsBtn.addEventListener('click', function() {
+  optionsBtn.addEventListener('click', () => {
       if (chrome.runtime.openOptionsPage) {
         chrome.runtime.openOptionsPage();
       } 
       else {
-        window.open(chrome.runtime.getURL('options.html'));
+        window.open(chrome.runtime.getURL('settings.html'));
       }
   });
 }
 
 (function setUp() {
-  log.trace()
-  addEventListeners();
-  chrome.storage.local.get(['active'], function(result) {
-    redaxActive = result.active;
-    if (result.active) {
-      startRedax();
-    }
-  });
-  chrome.storage.local.get(['highlighted'], function(result) {
-      var highlighted = result.highlighted;
-      if (highlighted) {
-        highlightCheck.setAttribute('checked', true);
-      }
-      else {
-        highlightCheck.removeAttribute('checked');
-      }
-  });
-  chrome.storage.local.get(['showOriginals'], function(result) {
-      var show = result.showOriginals;
-      if (show) {
-        showCheck.setAttribute('checked', true);
-      }
-      else {
-        showCheck.removeAttribute('checked');
-      }
-  });
+    addEventListeners();
+    chrome.runtime.sendMessage({message: 'popup count request'}, response => {
+        if (response) {
+            document.querySelector('#blrst_counter').innerHTML = response;
+        }
+    });
+    chrome.storage.local.get(['active'], (result) => {
+        blurstActive = result.active;
+        if (result.active) {
+            startBlurst();
+        }
+    });
 })();
